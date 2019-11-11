@@ -7,9 +7,11 @@ using namespace std;
 int main()
 {
    Puzzle sudoku;
-   sudoku.setBoard();
+   cin >> sudoku;
    cout << sudoku << "\n";
-   sudoku.solve(0, 0);
-   cout << sudoku << "\n";
+   if (sudoku.solve(0, 0))
+      cout << sudoku;
+   else
+      cout << "Not solved";
 }
 
