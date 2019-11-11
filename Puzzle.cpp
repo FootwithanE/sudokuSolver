@@ -1,24 +1,7 @@
 #include "Puzzle.h"
+#include <vector>
 
-Puzzle::Puzzle()
-{
-}
-bool Puzzle::setBoard()
-{
-   int count = 0;
-   while (count < 81) {
-      for (int i = 0; i < GAME_SIZE; i++)
-      {
-         for (int j = 0; j < GAME_SIZE; j++)
-         {
-            gameBoard[i][j].setValue(0);
-            count++;
-         }
-      }
-   }
-   return true;
-}
-Puzzle::Square::Square() : value(NULL), fixed(false)
+Puzzle::Square::Square() : value(0), fixed(false)
 {
 }
 Puzzle::Square::Square(int num) : value(num), fixed(false)
@@ -44,6 +27,24 @@ bool Puzzle::Square::isFixed() const
 void Puzzle::Square::setFixed()
 {
    fixed = true;
+}
+Puzzle::Puzzle()
+{
+}
+bool Puzzle::setBoard(const std::vector<int>& board)
+{
+   int pos = 0;
+   for (int i = 0; i < GAME_SIZE; i++)
+   {
+      for (int j = 0; j < GAME_SIZE; j++)
+      {
+         gameBoard[i][j].setValue(board.at(pos));
+         if (board.at(pos) > 0)
+            gameBoard[i][j].setFixed();
+         pos++;
+      }
+   }
+   return true;
 }
 std::ostream& operator<<(std::ostream& os, const Puzzle& obj)
 {
@@ -78,7 +79,18 @@ std::ostream& operator<<(std::ostream& os, const Puzzle& obj)
 }
 std::istream& operator>>(std::istream& is, Puzzle& obj)
 {
-   
+   std::vector<int> board;
+   while (board.size() < 81)
+   {
+      char next = is.get();
+      if (isdigit(next))
+      {
+         int num = (int)next - 48;
+         if (num >= 0 && num <= 9)
+            board.push_back(num);
+      }
+   }  
+   obj.setBoard(board);
    return is;
 } // Still needs work
 bool Puzzle::checkRowCol(int row, int col, int num) const
@@ -113,8 +125,8 @@ bool Puzzle::checkSubSquare(int row, int col, int num) const
 bool Puzzle::set(int x, int y, int num)
 {
    // check against game rules
-   if (!checkRowCol(x, y, num) || !checkSubSquare(x, y, num) 
-         || gameBoard[x][y].isFixed())
+   if (!checkRowCol(x, y, num) || !checkSubSquare(x, y, num)
+      || gameBoard[x][y].isFixed())
       return false;
    gameBoard[x][y].setValue(num);
    return true;
@@ -154,8 +166,9 @@ bool Puzzle::findNextVariable(int& row, int& col)
    return false;
 }
 bool Puzzle::solve(int row, int col)
-{  
-   if (!(findNextVariable(row, col)))
+{
+   findNextVariable(row, col);
+   if (row > 8)
       return true;
 
    for (int i = 1; i <= 9; i++)
