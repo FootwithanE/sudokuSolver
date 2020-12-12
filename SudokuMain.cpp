@@ -4,6 +4,8 @@
 
 using namespace std;
 
+// Takes in a puzzle as a stream of integers
+// Solves and prints puzzle if solveable
 int main()
 {
    Puzzle sudoku;
