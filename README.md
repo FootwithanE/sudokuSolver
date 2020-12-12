@@ -1,2 +1,2 @@
-# ProjectThree
+# School Project
 Sudoku Solver
