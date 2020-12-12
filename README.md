@@ -1,2 +1,2 @@
-# School Project
+# Backtracking Project
 Sudoku Solver
